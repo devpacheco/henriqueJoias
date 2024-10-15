@@ -152,9 +152,9 @@ export default function Home(){
     <>
       <Header/>
 
-      <Container>
+      <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
         <Slide/>
-        <main className="w-full mx-auto">
+        <main className="w-full">
             <form onSubmit={handleSearch} className="w-full bg-slate-200 p-2 rounded-lg flex items-center gap-1">
                 <input 
                 className="w-full bg-slate-200 outline-none"
@@ -208,7 +208,7 @@ export default function Home(){
                 ))}
             </section>
         </main>
-      </Container>
+      </div>
 
       <Footer/>
     </>
