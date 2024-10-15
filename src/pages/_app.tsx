@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 
 export default function App({ Component, pageProps }: AppProps) {
   return(
-    <SessionProvider>
+    <SessionProvider basePath="/custom-route/api/auth">
     <Toaster
         position="top-center"
         reverseOrder={false}
