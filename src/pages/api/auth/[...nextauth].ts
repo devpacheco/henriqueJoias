@@ -13,7 +13,6 @@ export default NextAuth({
     signOut: '/auth/signout', // Custom sign-out page
     error: '/auth/error', // Error handling page
     verifyRequest: '/auth/verify-request', // (for email sign-in)
-    newUser: undefined,
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
