@@ -154,7 +154,7 @@ export default function Home(){
 
       <Container>
         <Slide/>
-        <main className="w-full">
+        <main className="w-full mx-auto">
             <form onSubmit={handleSearch} className="w-full bg-slate-200 p-2 rounded-lg flex items-center gap-1">
                 <input 
                 className="w-full bg-slate-200 outline-none"
