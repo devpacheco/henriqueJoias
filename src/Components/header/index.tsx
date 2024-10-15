@@ -31,7 +31,7 @@ export function Header(){
                 </div>{/* FIM DA LOGO */}
                 <div>
                 {!session ? (
-                    <button onClick={()=> signIn("google")} > <PiSignInDuotone size={34} /> </button>
+                    <button onClick={()=> signIn()} > <PiSignInDuotone size={34} /> </button>
                 ) : (
                     <div className="flex items-center gap-2">
                     <Link href="/dashboard" >
