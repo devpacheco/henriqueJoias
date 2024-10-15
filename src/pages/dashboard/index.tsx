@@ -3,7 +3,6 @@ import { getSession } from "next-auth/react"
 import Link from "next/link"
 import { FaHome } from "react-icons/fa"
 import { Header } from "@/Components/header"
-import { Container } from "@/Components/Container"
 
 
 //IMPORTS DE FUNCIONALIDADES
@@ -119,7 +118,7 @@ export default function Dashboard(){
         <main>
             <Header/>
 
-            <Container>
+            <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
                 {/* INÍCIO DA SUBMENU */}
                 <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
                     <nav className="flex items-center gap-4 font-medium">
@@ -185,7 +184,7 @@ export default function Dashboard(){
             </section>
             {/* FINAL DA DASHCARD */}
                 
-            </Container>
+            </div>
         </main>
     )
 }

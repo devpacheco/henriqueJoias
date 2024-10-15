@@ -19,7 +19,6 @@ import { db } from "@/services/firebaseConnection";
 import { addDoc, collection } from "firebase/firestore";
 
 //IMPORT DE COMPONENTS
-import { Container } from "@/Components/Container"
 import { Header } from "@/Components/header"
 import Link from "next/link";
 import { FaHome } from "react-icons/fa";
@@ -164,7 +163,7 @@ async function onSubmit(e: FormEvent){
         <main>
             <Header/>
 
-            <Container>
+            <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
                 <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
                     <nav className="flex items-center gap-4 font-medium">
                         <Link href="/dashboard"> Dashboard </Link>
@@ -298,7 +297,7 @@ async function onSubmit(e: FormEvent){
                         </button>
                     </form>
                 </section>
-            </Container>
+            </div>
         </main>
     )
 }
