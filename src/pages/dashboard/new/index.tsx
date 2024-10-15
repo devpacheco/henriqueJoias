@@ -21,14 +21,11 @@ import { addDoc, collection } from "firebase/firestore";
 //IMPORT DE COMPONENTS
 import { Container } from "@/Components/Container"
 import { Header } from "@/Components/header"
-import { Submenu } from "../components/submenu"
-import { Input } from "../components/input"
+import Link from "next/link";
+import { FaHome } from "react-icons/fa";
 
 //IMPORT DE FUNCIONALIDADES
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ChangeEvent } from "react"
+import { ChangeEvent, FormEvent } from "react"
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -37,29 +34,19 @@ import { FcAddImage } from "react-icons/fc";
 import { FaTrash } from "react-icons/fa";
 
 
-const schema = z.object({
-    name: z.string().nonempty("O Campo Nome é Obrigátorio"),
-    price: z.string().nonempty("O Campo Price é Obrigátorio"),
-    plot: z.string().nonempty("O Campo Parcela é Obrigátorio"),
-})
-
-type FormData = z.infer<typeof schema>
-
-
 //INÍCIO DA FUNCTION PRINCIPAL
 export default function New(){
-    const { register, handleSubmit, reset, formState: {errors}} = useForm<FormData>({
-        resolver: zodResolver(schema),
-        mode: "onChange"
-    })
     const { data: session } = useSession();
     const [productImage, setProductImage] = useState<ProductImageProps[]>([]);
     const [category, setCategory] = useState("");
     console.log(category);
 
-    //INIT E FINAL
+    //PROPIEDADE INPUT
     const [init, setInit] = useState("");
     const [final, setFinal] = useState("");
+    const [name, setName] = useState("");
+    const [price, setPrice] = useState("");
+    const [plot, setPlot] = useState("");
 
     //INÍCIO DA HANDLE UPLOAD
     async function handleUpload(image: File){
@@ -120,7 +107,9 @@ async function handleDeleteImage(item: ProductImageProps){
 }
 
 //INÍCIO DA CADASTRO
-async function onSubmit(data: FormData){
+async function onSubmit(e: FormEvent){
+    e.preventDefault();
+
     if(productImage.length === 0){
         toast("Adicione uma Imagem Primeiro!", {
             icon: "📷"
@@ -149,10 +138,10 @@ async function onSubmit(data: FormData){
     })
 
     addDoc(collection(db, "product"), {
-        name: data.name.toUpperCase(),
+        name: name.toUpperCase(),
         category: category,
-        price: data.price,
-        plot: data.plot,
+        price: price,
+        plot: plot,
         init: init,
         final: final,
         created: new Date(),
@@ -160,7 +149,6 @@ async function onSubmit(data: FormData){
         images: imgProduct,
     })
     .then(()=>{
-        reset();
         setProductImage([]);
         setCategory("");
         setInit("");
@@ -177,7 +165,17 @@ async function onSubmit(data: FormData){
             <Header/>
 
             <Container>
-                <Submenu/>
+                <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
+                    <nav className="flex items-center gap-4 font-medium">
+                        <Link href="/dashboard"> Dashboard </Link>
+                        <Link href="/dashboard/new"> Cadastrar Produto </Link>
+                    </nav>
+                    <div className="cursor-pointer">
+                        <Link href="/">
+                            <FaHome size={22} />
+                        </Link>
+                    </div>
+                </main>
 
                 <section className="w-full"  >
                     <div className="w-full bg-slate-300 rounded-lg p-2 flex gap-1">
@@ -211,19 +209,19 @@ async function onSubmit(data: FormData){
 
                     </div>{/* FIM DA ADD IMAGE */}
                     <form 
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={onSubmit}
                     className="w-full p-2 rounded-lg bg-slate-300 mt-5 mb-3"
                     >
                         {/* NAME E CATEGORY */}
                         <div className="w-full flex flex-col items-center gap-2 md:flex-row">
                             <div className="w-full mb-3">
                                 <p className="font-medium">Nome do Produto:</p>
-                                <Input
+                                <input
                                     type="text"
                                     placeholder="Digite o nome do produto..."
                                     name="name"
-                                    error={errors.name?.message}
-                                    register={register}
+                                    value={name}
+                                    onChange={(e)=> setName(e.target.value)}
                                 />
                             </div>
                             <div className="w-full mb-3">
@@ -248,22 +246,22 @@ async function onSubmit(data: FormData){
                         <div className="w-full flex items-center gap-2">
                             <div className="w-full mb-3">
                                 <p className="font-medium">Preço do Produto:</p>
-                                <Input
+                                <input
                                     type="text"
                                     placeholder="Ex: 199,90R$"
                                     name="price"
-                                    error={errors.price?.message}
-                                    register={register}
+                                    value={price}
+                                    onChange={(e)=> setPrice(e.target.value)}
                                 />
                             </div>
                             <div className="w-full mb-3">
                                 <p className="font-medium">Parcela do Produto:</p>
-                                <Input
+                                <input
                                     type="text"
                                     placeholder="Ex: 3x sem juros..."
                                     name="plot"
-                                    error={errors.plot?.message}
-                                    register={register}
+                                    value={plot}
+                                    onChange={(e)=> setPlot(e.target.value)}
                                 />
                             </div>
                         </div>{/* FIM DO PRICE E PARCELA */}
