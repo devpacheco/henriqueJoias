@@ -13,9 +13,29 @@ import LogoImg from "../../../public/assets/logo.png"
 import { PiSignInDuotone } from "react-icons/pi";
 import { FaSignOutAlt } from "react-icons/fa";
 
+//IMPORTS DO FIREBASE
+import { auth } from "@/services/firebaseConnection";
+import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
+import { useState } from "react";
+
+//IMPORTS DE CONTEXT
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export function Header(){
-    const { data: session, status } = useSession();
+    const { user, signed } = useContext(AuthContext);
+
+    async function handleLoginGoogle(){
+        const provider = new GoogleAuthProvider();
+
+        signInWithPopup(auth, provider)
+        .then((result)=> {
+            console.log("USÁRIO LOGADO COM SUCESSO")
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+    }
 
     return(
         <header className="w-full bg-slate-100 h-16 flex items-center shadow-md">
@@ -30,12 +50,12 @@ export function Header(){
                     </Link>
                 </div>{/* FIM DA LOGO */}
                 <div>
-                {!session ? (
-                    <button onClick={()=> signIn()} > <PiSignInDuotone size={34} /> </button>
+                {!signed ? (
+                    <button onClick={handleLoginGoogle} > <PiSignInDuotone size={34} /> </button>
                 ) : (
                     <div className="flex items-center gap-2">
                     <Link href="/dashboard" >
-                     {session.user?.image && <img className="w-10 h-10 rounded-full" src={session.user.image} />}
+                     {user?.photoURL && ( <img src={user.photoURL} alt="Foto do usuário" className="w-11 h-11 rounded-full" /> )}
                     </Link>
                     <button onClick={()=> signOut()}> <FaSignOutAlt size={30}/> </button>
                     </div>

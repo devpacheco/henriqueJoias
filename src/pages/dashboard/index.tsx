@@ -3,7 +3,11 @@ import { getSession } from "next-auth/react"
 import Link from "next/link"
 import { FaHome } from "react-icons/fa"
 import { Header } from "@/Components/header"
+import { Navigate } from "react-router-dom";
 
+//IMPORTS DE CONTEXT
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 //IMPORTS DE FUNCIONALIDADES
 import { useState, useEffect } from "react"
@@ -25,6 +29,7 @@ import {
 //IMPORTS DE ICONS
 import { FaFilter, FaTrash } from "react-icons/fa";
 import { deleteObject, ref } from "firebase/storage";
+import { redirect } from "next/dist/server/api-utils"
 
 export default function Dashboard(){
     const [produto, setProduto] = useState<ProductProps[]>([]);
@@ -36,6 +41,9 @@ export default function Dashboard(){
         loadProduct();
 
     },[])
+
+    //INÍCIO DA CHECKED
+
 
     //INÍCIO DA LOAD PRODUCT
     async function loadProduct(){
@@ -187,28 +195,4 @@ export default function Dashboard(){
             </div>
         </main>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async({req})=>{
-    const session = await getSession({req});
-
-    const admin = {
-        user:{
-            email: "henriquejoiascarpina@gmail.com"
-        }
-    }
-
-    if(session?.user?.email !== admin.user.email){
-        return{
-            redirect: {
-                destination: "/",
-                permanent: false
-            }
-        }
-    }
-
-
-    return{
-        props: {},
-    }
 }

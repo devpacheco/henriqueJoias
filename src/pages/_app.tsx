@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react"
 import { Toaster } from 'react-hot-toast'
+import AuthProvider from "@/contexts/AuthContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return(
@@ -10,7 +11,9 @@ export default function App({ Component, pageProps }: AppProps) {
         position="top-center"
         reverseOrder={false}
     />
-    <Component {...pageProps} />
+    <AuthProvider>
+      <Component {...pageProps} />
+    </AuthProvider>
     </SessionProvider>
   )
 }
