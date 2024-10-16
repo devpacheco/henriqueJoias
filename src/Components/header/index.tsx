@@ -1,7 +1,3 @@
-//IMPORTS DE COMPONENTS
-import { useSession, signIn, signOut } from "next-auth/react";
-
-
 //IMPORTS DE FUNCIONALIDADES
 import Link from "next/link"
 
@@ -15,7 +11,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 //IMPORTS DO FIREBASE
 import { auth } from "@/services/firebaseConnection";
-import { GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, User, signOut } from "firebase/auth";
 import { useState } from "react";
 
 //IMPORTS DE CONTEXT
@@ -25,6 +21,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 export function Header(){
     const { user, signed } = useContext(AuthContext);
 
+    //INÍCIO DA LOGIN
     async function handleLoginGoogle(){
         const provider = new GoogleAuthProvider();
 
@@ -35,6 +32,11 @@ export function Header(){
         .catch((error)=>{
             console.log(error);
         })
+    }
+
+    //INÍCIO DA LOGOUT
+    function handleLogOut(){
+        signOut(auth);
     }
 
     return(
@@ -57,7 +59,7 @@ export function Header(){
                     <Link href="/dashboard" >
                      {user?.photoURL && ( <img src={user.photoURL} alt="Foto do usuário" className="w-10 h-10 rounded-full" /> )}
                     </Link>
-                    <button onClick={()=> signOut()}> <FaSignOutAlt size={30}/> </button>
+                    <button onClick={handleLogOut}> <FaSignOutAlt size={30}/> </button>
                     </div>
                 ) }
 
