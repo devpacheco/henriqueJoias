@@ -1,7 +1,7 @@
 //IMPORTS DE FUNCINALIDADES
 import { GetServerSideProps } from "next"
 import { ProductProps } from "@/utils/product.type";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 //IMPORT DE BANCO DE DADOS
 import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where, addDoc} from "firebase/firestore";
@@ -22,6 +22,7 @@ import { FaSearch, FaStar } from "react-icons/fa"
 //IMPORT USER
 import { useSession } from "next-auth/react";
 import { PiUserCircleDuotone } from "react-icons/pi";
+import { AuthContext } from "@/contexts/AuthContext";
 
 //INTERFACE DETAILPROPS
 interface DetailProps {
@@ -43,6 +44,7 @@ interface CommentProps {
 //INÍCIO DA PAGE
 export default function Detail({item, id}: DetailProps){
     const [tamanho, setTamanho] = useState("");
+    const { user } = useContext(AuthContext);
 
     //INICIO DA HANDLE BUYS
     function handleBuy(){
@@ -59,7 +61,7 @@ export default function Detail({item, id}: DetailProps){
 
     const [comentarios, setComentarios] = useState<CommentProps[]>([]);
 
-    const { data: session } = useSession();
+    
     
     //FUNCTION COMMENT
     async function handleComment(){
@@ -70,7 +72,7 @@ export default function Detail({item, id}: DetailProps){
             return;
         }
 
-        if(!session?.user?.email){
+        if(!user?.email){
             toast("Faça login para poder comentar",{
                 icon: "⚠️"
             })
@@ -82,8 +84,8 @@ export default function Detail({item, id}: DetailProps){
                 Idproduct: id,
                 comment: comment,
                 stars: rating,
-                user: session?.user?.email,
-                nameUser: session?.user?.name,
+                user: user?.email,
+                nameUser: user?.displayName,
                 created: new Date(),
             })
             setComment("");

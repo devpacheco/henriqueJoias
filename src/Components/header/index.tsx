@@ -1,5 +1,3 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-
 //IMPORTS DE FUNCIONALIDADES
 import Link from "next/link"
 
@@ -13,7 +11,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 //IMPORTS DO FIREBASE
 import { auth } from "@/services/firebaseConnection";
-import { GoogleAuthProvider, signInWithPopup, User, } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, User, signOut } from "firebase/auth";
 import { useState } from "react";
 
 //IMPORTS DE CONTEXT
@@ -22,25 +20,24 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 export function Header(){
     const { user, signed } = useContext(AuthContext);
-    const { data: session, status } = useSession();
 
-    // //INÍCIO DA LOGIN
-    // async function handleLoginGoogle(){
-    //     const provider = new GoogleAuthProvider();
+    //INÍCIO DA LOGIN
+    async function handleLoginGoogle(){
+        const provider = new GoogleAuthProvider();
 
-    //     signInWithPopup(auth, provider)
-    //     .then((result)=> {
-    //         console.log("USÁRIO LOGADO COM SUCESSO")
-    //     })
-    //     .catch((error)=>{
-    //         console.log(error);
-    //     })
-    // }
+        signInWithPopup(auth, provider)
+        .then((result)=> {
+            console.log("USÁRIO LOGADO COM SUCESSO")
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+    }
 
-    // //INÍCIO DA LOGOUT
-    // function handleLogOut(){
-    //     signOut(auth);
-    // }
+    //INÍCIO DA LOGOUT
+    function handleLogOut(){
+        signOut(auth);
+    }
 
     return(
         <header className="w-full bg-slate-100 h-16 flex items-center shadow-md">
@@ -55,14 +52,14 @@ export function Header(){
                     </Link>
                 </div>{/* FIM DA LOGO */}
                 <div>
-                {!session ? (
-                    <button onClick={()=> signIn("google")} > <PiSignInDuotone size={34} /> </button>
+                {!signed ? (
+                    <button onClick={handleLoginGoogle} > <PiSignInDuotone size={34} /> </button>
                 ) : (
                     <div className="flex items-center gap-2">
                     <Link href="/dashboard" >
-                     {session.user?.image && ( <img src={session.user?.image} alt="Foto do usuário" className="w-10 h-10 rounded-full" /> )}
+                     {user?.photoURL && ( <img src={user.photoURL} alt="Foto do usuário" className="w-10 h-10 rounded-full" /> )}
                     </Link>
-                    <button onClick={()=> signOut()}> <FaSignOutAlt size={30}/> </button>
+                    <button onClick={handleLogOut}> <FaSignOutAlt size={30}/> </button>
                     </div>
                 ) }
 

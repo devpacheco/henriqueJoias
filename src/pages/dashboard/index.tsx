@@ -1,20 +1,17 @@
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/react"
 import Link from "next/link"
 import { FaHome } from "react-icons/fa"
 import { Header } from "@/Components/header"
-import { Navigate } from "react-router-dom";
 
-//IMPORTS DE CONTEXT
-import { useContext } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+//IMPORT DE COMPONENTS
+import { AuthContext } from "@/contexts/AuthContext"
 
 //IMPORTS DE FUNCIONALIDADES
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext, use } from "react"
 import { ProductProps } from "@/utils/product.type"
 
 //IMPORTS DO BANCO DE DADOS
-import { db, storage } from "@/services/firebaseConnection"
+import { auth, db, storage } from "@/services/firebaseConnection"
 import { 
     collection, 
     query,
@@ -29,18 +26,41 @@ import {
 //IMPORTS DE ICONS
 import { FaFilter, FaTrash } from "react-icons/fa";
 import { deleteObject, ref } from "firebase/storage";
-import { redirect } from "next/dist/server/api-utils"
+import { redirect } from "next/navigation"
+import { onAuthStateChanged } from "firebase/auth"
+import { useRouter } from "next/router"
+
 
 export default function Dashboard(){
     const [produto, setProduto] = useState<ProductProps[]>([]);
     const [filter, setFilter] = useState("");
+    const { signed, user, loadingAuth } = useContext(AuthContext);
+    const router = useRouter();
 
     //INÍCIO DA UseEffect  
     useEffect(()=>{
-    
+        function checked(){
+            const admin = {
+                user: {
+                    email: "henriquejoiascarpina@gmail.com"
+                }
+            }
+
+            if (!signed) {
+                router.back()             
+            }
+
+            if(user?.email !== admin.user.email){
+                router.push('/');
+            }
+
+        }
+
+        checked();
+      
         loadProduct();
 
-    },[])
+    },[router, signed, user])
 
     //INÍCIO DA CHECKED
 
@@ -124,6 +144,7 @@ export default function Dashboard(){
 
     return(
         <main>
+            
             <Header/>
 
             <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">

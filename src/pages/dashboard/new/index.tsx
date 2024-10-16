@@ -9,7 +9,6 @@ interface ProductImageProps {
 }
 
 //IMPORTS DO STORAGE
-import { useSession } from "next-auth/react";
 import { storage } from "@/services/firebaseConnection"
 import { uploadBytes, getDownloadURL, ref, deleteObject } from "firebase/storage"
 import { v4 as uuidv4 } from 'uuid';
@@ -24,18 +23,22 @@ import Link from "next/link";
 import { FaHome } from "react-icons/fa";
 
 //IMPORT DE FUNCIONALIDADES
-import { ChangeEvent, FormEvent } from "react"
+import { ChangeEvent, FormEvent, useContext } from "react"
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 //IMPORT DE ICONS
 import { FcAddImage } from "react-icons/fc";
 import { FaTrash } from "react-icons/fa";
+import { AuthContext } from "@/contexts/AuthContext";
 
 
 //INÍCIO DA FUNCTION PRINCIPAL
 export default function New(){
-    const { data: session } = useSession();
+
+    const { user, signed } = useContext(AuthContext);
+    const router = useRouter();
     const [productImage, setProductImage] = useState<ProductImageProps[]>([]);
     const [category, setCategory] = useState("");
     console.log(category);
@@ -47,13 +50,35 @@ export default function New(){
     const [price, setPrice] = useState("");
     const [plot, setPlot] = useState("");
 
+    //REDIRECT
+    useEffect(()=>{
+        function checked(){
+            const admin = {
+                user: {
+                    email: "henriquejoiascarpina@gmail.com"
+                }
+            }
+
+            if (!signed) {
+                router.back()             
+            }
+
+            if(user?.email !== admin.user.email){
+                router.push('/');
+            }
+
+        }
+
+        checked();
+    },[router, signed, user])
+
     //INÍCIO DA HANDLE UPLOAD
     async function handleUpload(image: File){
-        if(!session?.user?.email){
+        if(!user?.email){
             return;
         }
 
-        const currentUid = session.user.email;
+        const currentUid = user.email;
         const UidImage = uuidv4();
 
         const uploadRef = ref(storage, `images/${currentUid}/${UidImage}`)
@@ -91,7 +116,7 @@ async function handleFile(e: ChangeEvent<HTMLInputElement>){
 
 //INÍCIO DA DELETE IMAGE
 async function handleDeleteImage(item: ProductImageProps){
-    const imagePath = `images/${session?.user?.email}/${item.name}`
+    const imagePath = `images/${user?.email}/${item.name}`
     const imageRef = ref(storage, imagePath);
 
     try{
@@ -144,7 +169,7 @@ async function onSubmit(e: FormEvent){
         init: init,
         final: final,
         created: new Date(),
-        user: session?.user?.email,
+        user: user?.email,
         images: imgProduct,
     })
     .then(()=>{
@@ -216,6 +241,7 @@ async function onSubmit(e: FormEvent){
                             <div className="w-full mb-3">
                                 <p className="font-medium">Nome do Produto:</p>
                                 <input
+                                    className="w-full rounded-lg border-2 border-slate-900 h-11 my-1 px-2 py-2 bg-slate-300 outline-none placeholder:text-slate-600"
                                     type="text"
                                     placeholder="Digite o nome do produto..."
                                     name="name"
@@ -246,6 +272,7 @@ async function onSubmit(e: FormEvent){
                             <div className="w-full mb-3">
                                 <p className="font-medium">Preço do Produto:</p>
                                 <input
+                                    className="w-full rounded-lg border-2 border-slate-900 h-11 my-1 px-2 py-2 bg-slate-300 outline-none placeholder:text-slate-600"
                                     type="text"
                                     placeholder="Ex: 199,90R$"
                                     name="price"
@@ -256,6 +283,7 @@ async function onSubmit(e: FormEvent){
                             <div className="w-full mb-3">
                                 <p className="font-medium">Parcela do Produto:</p>
                                 <input
+                                    className="w-full rounded-lg border-2 border-slate-900 h-11 my-1 px-2 py-2 bg-slate-300 outline-none placeholder:text-slate-600"
                                     type="text"
                                     placeholder="Ex: 3x sem juros..."
                                     name="plot"
