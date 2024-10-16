@@ -55,7 +55,7 @@ export function Header(){
                 ) : (
                     <div className="flex items-center gap-2">
                     <Link href="/dashboard" >
-                     {user?.photoURL && ( <img src={user.photoURL} alt="Foto do usuário" className="w-11 h-11 rounded-full" /> )}
+                     {user?.photoURL && ( <img src={user.photoURL} alt="Foto do usuário" className="w-10 h-10 rounded-full" /> )}
                     </Link>
                     <button onClick={()=> signOut()}> <FaSignOutAlt size={30}/> </button>
                     </div>
