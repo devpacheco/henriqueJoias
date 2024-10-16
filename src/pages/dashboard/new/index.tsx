@@ -32,6 +32,7 @@ import toast from "react-hot-toast";
 import { FcAddImage } from "react-icons/fc";
 import { FaTrash } from "react-icons/fa";
 import { AuthContext } from "@/contexts/AuthContext";
+import Head from "next/head";
 
 
 //INÍCIO DA FUNCTION PRINCIPAL
@@ -49,6 +50,7 @@ export default function New(){
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [plot, setPlot] = useState("");
+    const [description, setDescription] = useState("");
 
     //REDIRECT
     useEffect(()=>{
@@ -168,6 +170,7 @@ async function onSubmit(e: FormEvent){
         plot: plot,
         init: init,
         final: final,
+        description: description,
         created: new Date(),
         user: user?.email,
         images: imgProduct,
@@ -177,6 +180,10 @@ async function onSubmit(e: FormEvent){
         setCategory("");
         setInit("");
         setFinal("");
+        setName("");
+        setPrice("");
+        setPlot("");
+        setDescription("");
         console.log("ITEM CADASTRADO!")
         toast("Produto Cadastrada com sucesso", {
             icon: "📦"
@@ -186,6 +193,10 @@ async function onSubmit(e: FormEvent){
 
     return(
         <main>
+            <Head>
+                <title> Página de Cadastro - Henrique joias </title>
+            </Head>
+
             <Header/>
 
             <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
@@ -296,7 +307,7 @@ async function onSubmit(e: FormEvent){
                             {category !== "limpeza" && (
                                 <div className="w-full md:w-3/6 flex items-center gap-2">
                                     <div className="w-full mb-3">
-                                        <p className="font-medium">Tamanho Inicial</p>
+                                        <p className="font-medium">Tamanho Inicial:</p>
                                         <input
                                             className="w-full rounded-lg border-2 border-slate-900 h-11 my-1 px-2 py-2 bg-slate-300 outline-none placeholder:text-slate-600"
                                             type="text"
@@ -320,6 +331,21 @@ async function onSubmit(e: FormEvent){
                                 </div>
                             )}
                         {/* FIM DO INIT E FINAL*/}
+                        {/* INÍCIO DA DESCRIPTION */}
+                            <div className="w-full">
+                                <div className="w-full mb-3">
+                                    <p className="font-medium">Descrição:</p>
+                                    <textarea 
+                                    className="w-full rounded-lg p-2 bg-slate-300 border-2 resize-none border-slate-900 placeholder:text-slate-600 outline-none"
+                                    name="description"
+                                    placeholder="Informe a descrição do produto..."
+                                    value={description}
+                                    onChange={(e)=>setDescription(e.target.value)}
+                                    >
+                                    </textarea>
+                                </div>
+                            </div>
+                        {/* INÍCIO DA DESCRIPTION */}
                         <button type="submit" className="w-full h-11 border-none rounded-lg bg-slate-600 text-white font-medium">
                             Cadastrar
                         </button>

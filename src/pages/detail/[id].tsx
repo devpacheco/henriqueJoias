@@ -11,6 +11,7 @@ import { db } from "@/services/firebaseConnection";
 import { Container } from "@/Components/Container";
 import { Header } from "@/Components/header";
 import Link from "next/link";
+import Head from "next/head";
 
 
 //IMPORT DE ICONS
@@ -134,6 +135,9 @@ export default function Detail({item, id}: DetailProps){
 
     return(
         <main>
+            <Head>
+                <title> {item.name} </title>
+            </Head>
             <Header/>
             <Container>
                 <>
@@ -377,6 +381,7 @@ export const getServerSideProps: GetServerSideProps = async({params})=>{
         name: snapShot.data()?.name,
         plot: snapShot.data()?.plot,
         price: snapShot.data()?.price,
+        description: snapShot.data()?.description,
         user: snapShot.data()?.user,
         images: snapShot.data()?.images
     }

@@ -29,6 +29,7 @@ import { deleteObject, ref } from "firebase/storage";
 import { redirect } from "next/navigation"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/router"
+import Head from "next/head"
 
 
 export default function Dashboard(){
@@ -85,6 +86,7 @@ export default function Dashboard(){
                     plot: doc.data().plot,
                     init: doc.data().init,
                     final: doc.data().final,
+                    description: doc.data().description,
                     created: doc.data().created,
                     user: doc.data().user,
                     images: doc.data().images,
@@ -117,6 +119,7 @@ export default function Dashboard(){
                 plot: doc.data().plot,
                 init: doc.data().init,
                 final: doc.data().final,
+                description: doc.data().description,
                 created: doc.data().created,
                 user: doc.data().user,
                 images: doc.data().images,
@@ -145,6 +148,10 @@ export default function Dashboard(){
     return(
         <main>
             
+            <Head>
+                <title> Página de Admin - Henrique joias </title>
+            </Head>
+
             <Header/>
 
             <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">

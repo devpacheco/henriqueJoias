@@ -43,6 +43,7 @@ import Link from "next/link";
 import { BiSolidNavigation } from "react-icons/bi";
 import { MdOutlineCopyright } from "react-icons/md";
 import { FaLaptopCode } from "react-icons/fa";
+import Head from "next/head";
 
 export default function Home(){
     const [mensage, setMensage] = useState("");
@@ -165,6 +166,10 @@ export default function Home(){
 
   return(
     <>
+     <Head>
+        <title> Henrique Joias - Conheça nossas joias! </title>
+     </Head>
+
       <Header/>
 
       <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">

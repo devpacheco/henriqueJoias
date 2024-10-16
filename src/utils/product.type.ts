@@ -6,6 +6,7 @@ export interface ProductProps {
     plot: string;
     init: string;
     final: string;
+    description: string;
     created: string;
     user: string;
     images: ImageProps[];
