@@ -227,7 +227,7 @@ export default function Home(){
                         </Link>
                         
                         <p> A Partir de </p>
-                        <h1 className="font-extrabold text-2xl"> {item.price} R$ </h1>
+                        <h1 className="font-extrabold text-2xl"> {item.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} </h1>
                         <p> Ou {item.plot} </p>
                     </div>
                 ))}

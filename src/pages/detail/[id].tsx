@@ -1,7 +1,8 @@
 //IMPORTS DE FUNCINALIDADES
 import { GetServerSideProps } from "next"
 import { ProductProps } from "@/utils/product.type";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, FormEvent } from "react";
+import toast from "react-hot-toast";
 
 //IMPORT DE BANCO DE DADOS
 import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where, addDoc} from "firebase/firestore";
@@ -12,16 +13,15 @@ import { Container } from "@/Components/Container";
 import { Header } from "@/Components/header";
 import Link from "next/link";
 import Head from "next/head";
+import { CupomProps } from "@/utils/cupom.type";
 
 
 //IMPORT DE ICONS
 import { FaInstagram } from "react-icons/fa";
-import toast from "react-hot-toast";
 import { Footer } from "@/Components/footer";
 import { FaSearch, FaStar } from "react-icons/fa"
 
 //IMPORT USER
-import { useSession } from "next-auth/react";
 import { PiUserCircleDuotone } from "react-icons/pi";
 import { AuthContext } from "@/contexts/AuthContext";
 
@@ -44,15 +44,23 @@ interface CommentProps {
 
 //INÍCIO DA PAGE
 export default function Detail({item, id}: DetailProps){
+    //INPUT DE SELECT
     const [tamanho, setTamanho] = useState("");
+    //RECEBE O CUPOM DO BANCO DE DADOS
+    const [cupom, setCupom] = useState<CupomProps[]>([]);
+    //INPUT DE CUPOM
+    const [code, setCode] = useState("");
+    //USUÁRIO CADASTRADO
     const { user } = useContext(AuthContext);
+    //PRICE DINÂMICO
+    const [price, setPrice] = useState<number>(item.price);
 
     //INICIO DA HANDLE BUYS
     function handleBuy(){
 
         const number = "+5581989801354"
 
-        const url = `https://wa.me/${number}?text=Nome: ${item.name}%0aPreço: ${item.price}%0a${item.category !== "limpeza" ? (tamanho):(``)}Categoria: ${item.category}`
+        const url = `https://wa.me/${number}?text=Nome: ${item.name}%0aPreço: ${price}%0a${item.category !== "limpeza" ? (tamanho):(``)}Categoria: ${item.category}`
         window.open(url, "_blank")?.focus();
     }
 
@@ -61,9 +69,7 @@ export default function Detail({item, id}: DetailProps){
     const [comment, setComment] = useState('');
 
     const [comentarios, setComentarios] = useState<CommentProps[]>([]);
-
-    
-    
+ 
     //FUNCTION COMMENT
     async function handleComment(){
         if(comment === "" || rating === null){
@@ -130,7 +136,56 @@ export default function Detail({item, id}: DetailProps){
         
         loadComment();
 
+        loadCupom();
+
     },[])
+
+    //LOAD CUPOM
+    async function loadCupom(){
+        const cupomRef = collection(db, "cupom")
+        const q = query(cupomRef, orderBy("created", "desc"))
+    
+    
+        await getDocs(q)
+        .then((snapshot)=>{
+            let list = [] as CupomProps[];
+            snapshot.forEach((doc)=>{
+                list.push({
+                    id: doc.id,
+                    cupom: doc.data().cupom,
+                    user: doc.data().user,
+                    UserName: doc.data().UserName,
+                    created: doc.data().created,
+                })
+            })
+            setCupom(list)
+        })
+    }
+
+
+    //HANDLE CUPOM
+    function handleCupom(e: FormEvent){
+        e.preventDefault();
+
+        let cupomValue = ""
+
+        cupom.map((item)=>{
+            cupomValue = item.cupom;
+        })
+        
+        if(code === cupomValue){
+            const valorOriginal = item.price;
+            const desconto = valorOriginal * 0.10;
+            let valorFinal = valorOriginal - desconto;
+            setPrice(valorFinal);
+            toast("10% de Desconto Adiquirido!", {
+                icon: "🎟️"
+            })
+        } else {
+            toast.error("Cupom invalido!")
+            setPrice(item.price)
+        }
+    }
 
 
     return(
@@ -166,7 +221,7 @@ export default function Detail({item, id}: DetailProps){
                     {/* INÍCIO DO PRICE */}
                     <div className="mt-3 mb-2">
                      <p className="font-medium"> Por Apenas </p>
-                     <h1 className="uppercase font-extrabold text-3xl"> {item.price} R$ </h1>
+                     <h1 className="uppercase font-extrabold text-3xl"> {price.toLocaleString("pt-BR", {style: "currency", currency: "BRL"})} </h1>
                      <p className="font-medium"> Ou { item.plot } </p>
                     </div>{/* FIM DE PRICE */}
                     
@@ -263,6 +318,30 @@ export default function Detail({item, id}: DetailProps){
                                         </select>
                                     </div>
                                 ) }
+                                {/* INÍCIO DA CUPOM */}
+                                {item.category !== "limpeza" && (
+                                    <div>
+                                        <form 
+                                        onSubmit={handleCupom}
+                                        className="my-3"
+                                        >
+                                            <input
+                                            className="border-2 border-slate-900 bg-slate-300 h-11 px-2 outline-none placeholder:text-slate-600" 
+                                            type="text" 
+                                            placeholder="Algum cupom?"
+                                            value={code}
+                                            onChange={(e)=> setCode(e.target.value)}
+                                            />
+                                            <button 
+                                            type="submit"
+                                            className="border-2 border-slate-900 bg-slate-300 h-11 px-2"
+                                            > 
+                                            Adicionar 
+                                            </button>
+                                        </form>
+                                    </div>
+                                )}
+                                {/* FIM DA CUPOM */}
                             </div>
                         )}
                     {/* FINAL DE TAMANHO */}
@@ -390,7 +469,7 @@ export const getServerSideProps: GetServerSideProps = async({params})=>{
         user: snapShot.data()?.user,
         images: snapShot.data()?.images
     }
-
+    
     return{
         props: {
             item: product,

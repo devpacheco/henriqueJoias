@@ -49,7 +49,7 @@ export default function New(){
     const [init, setInit] = useState("");
     const [final, setFinal] = useState("");
     const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
+    const [price, setPrice] = useState<number>();
     const [plot, setPlot] = useState("");
     const [description, setDescription] = useState("");
 
@@ -182,7 +182,7 @@ async function onSubmit(e: FormEvent){
         setInit("");
         setFinal("");
         setName("");
-        setPrice("");
+        setPrice(0);
         setPlot("");
         setDescription("");
         console.log("ITEM CADASTRADO!")
@@ -294,7 +294,7 @@ async function onSubmit(e: FormEvent){
                                     placeholder="Ex: 199,90R$"
                                     name="price"
                                     value={price}
-                                    onChange={(e)=> setPrice(e.target.value)}
+                                    onChange={(e)=> setPrice(Number(e.target.value))}
                                 />
                             </div>
                             <div className="w-full mb-3">
