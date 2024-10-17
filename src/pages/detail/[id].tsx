@@ -54,13 +54,15 @@ export default function Detail({item, id}: DetailProps){
     const { user } = useContext(AuthContext);
     //PRICE DINÂMICO
     const [price, setPrice] = useState<number>(item.price);
+    //SABER SE USOU O CUPOM
+    const [uso, setUso] = useState<boolean>(false);
 
     //INICIO DA HANDLE BUYS
     function handleBuy(){
 
         const number = "+5581989801354"
 
-        const url = `https://wa.me/${number}?text=Nome: ${item.name}%0aPreço: ${price}%0a${item.category !== "limpeza" ? (tamanho):(``)}Categoria: ${item.category}`
+        const url = `https://wa.me/${number}?text=Nome: ${item.name}%0aPreço: ${price}%0a${item.category !== "limpeza" && (tamanho)}%0aCategoria: ${item.category}%0aCupom Usado: ${uso === true ? (`${code}`): ("Nenhum")} `
         window.open(url, "_blank")?.focus();
     }
 
@@ -178,12 +180,14 @@ export default function Detail({item, id}: DetailProps){
             const desconto = valorOriginal * 0.10;
             let valorFinal = valorOriginal - desconto;
             setPrice(valorFinal);
+            setUso(true);
             toast("10% de Desconto Adiquirido!", {
                 icon: "🎟️"
             })
         } else {
             toast.error("Cupom invalido!")
             setPrice(item.price)
+            setUso(false);
         }
     }
 
