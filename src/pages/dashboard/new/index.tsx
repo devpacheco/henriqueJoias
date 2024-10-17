@@ -33,6 +33,7 @@ import { FcAddImage } from "react-icons/fc";
 import { FaTrash } from "react-icons/fa";
 import { AuthContext } from "@/contexts/AuthContext";
 import Head from "next/head";
+import { CiBarcode } from "react-icons/ci";
 
 
 //INÍCIO DA FUNCTION PRINCIPAL
@@ -200,17 +201,22 @@ async function onSubmit(e: FormEvent){
             <Header/>
 
             <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
-                <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
+            {/* INÍCIO DA SUBMENU */}    
+            <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
                     <nav className="flex items-center gap-4 font-medium">
                         <Link href="/dashboard"> Dashboard </Link>
                         <Link href="/dashboard/new"> Cadastrar Produto </Link>
                     </nav>
-                    <div className="cursor-pointer">
+                    <div className="cursor-pointer flex gap-3 items-center">
+                        <Link href="/dashboard/cupom">
+                            <CiBarcode size={24} />
+                        </Link>
                         <Link href="/">
                             <FaHome size={22} />
                         </Link>
                     </div>
                 </main>
+                {/* FIM DA SUBMENU */}    
 
                 <section className="w-full"  >
                     <div className="w-full bg-slate-300 rounded-lg p-2 flex gap-1">

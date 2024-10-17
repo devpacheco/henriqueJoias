@@ -275,6 +275,11 @@ export default function Detail({item, id}: DetailProps){
                     </button>
                 </div>{/* FINAL DO INFO */}
 
+                <div className="w-full bg-slate-300 rounded-md py-2 px-4 my-3">
+                    <h2 className="text-xl font-extrabold"> Descrição Geral: </h2>
+                    <p> {item.description} </p>
+                </div>
+
                 {/* INÍCIO DO COMMENT */}
                 <div className="w-full rounded-lg bg-slate-300 my-5 p-2">
             <h1 className="font-bold text-xl pl-2 mb-3" > Avaliação do Produto </h1>

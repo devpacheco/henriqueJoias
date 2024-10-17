@@ -1,17 +1,17 @@
-import { GetServerSideProps } from "next"
-import Link from "next/link"
-import { FaHome } from "react-icons/fa"
-import { Header } from "@/Components/header"
-
 //IMPORT DE COMPONENTS
-import { AuthContext } from "@/contexts/AuthContext"
+import { Header } from "@/Components/header"
+import { ProductProps } from "@/utils/product.type"
+import Head from "next/head"
 
 //IMPORTS DE FUNCIONALIDADES
 import { useState, useEffect, useContext, use } from "react"
-import { ProductProps } from "@/utils/product.type"
+import Link from "next/link"
+import { AuthContext } from "@/contexts/AuthContext"
+import { useRouter } from "next/router"
 
 //IMPORTS DO BANCO DE DADOS
 import { auth, db, storage } from "@/services/firebaseConnection"
+import { deleteObject, ref } from "firebase/storage";
 import { 
     collection, 
     query,
@@ -25,12 +25,8 @@ import {
 
 //IMPORTS DE ICONS
 import { FaFilter, FaTrash } from "react-icons/fa";
-import { deleteObject, ref } from "firebase/storage";
-import { redirect } from "next/navigation"
-import { onAuthStateChanged } from "firebase/auth"
-import { useRouter } from "next/router"
-import Head from "next/head"
-
+import { FaHome } from "react-icons/fa"
+import { CiBarcode } from "react-icons/ci";
 
 export default function Dashboard(){
     const [produto, setProduto] = useState<ProductProps[]>([]);
@@ -62,8 +58,6 @@ export default function Dashboard(){
         loadProduct();
 
     },[router, signed, user])
-
-    //INÍCIO DA CHECKED
 
 
     //INÍCIO DA LOAD PRODUCT
@@ -161,7 +155,10 @@ export default function Dashboard(){
                         <Link href="/dashboard"> Dashboard </Link>
                         <Link href="/dashboard/new"> Cadastrar Produto </Link>
                     </nav>
-                    <div className="cursor-pointer">
+                    <div className="cursor-pointer flex gap-3 items-center">
+                        <Link href="/dashboard/cupom">
+                            <CiBarcode size={24} />
+                        </Link>
                         <Link href="/">
                             <FaHome size={22} />
                         </Link>
