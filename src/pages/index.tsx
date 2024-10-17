@@ -165,6 +165,18 @@ export default function Home(){
         })
     }
 
+        //SUBMIT FORM
+        async function handleSubmit(e: FormEvent) {
+            e.preventDefault();
+    
+            const phone = "+5581989801354"
+    
+            const url = `https://wa.me/${phone}?text=Mensagem de Suporte: ${mensage}%0a%0a`
+    
+            window.open(url, "_blank")?.focus();
+            setMensage("");
+        }
+
 
 
   return(
@@ -294,7 +306,10 @@ export default function Home(){
 
             {/* FORMULÁRIO */}
             <div className="flex flex-col w-60">
-                <form  className="border-2 h-10 border-slate-900 bg-slate-300 flex items-center">
+                <form  
+                onSubmit={handleSubmit}
+                className="border-2 h-10 border-slate-900 bg-slate-300 flex items-center"
+                >
                     <input 
                     name="message"
                     type="text"
