@@ -235,7 +235,7 @@ export default function Home(){
                             alt={item.name}
                             className="rounded-lg h-60 w-full object-cover"
                         />
-                        <h1 className="uppercase font-extrabold text-xl mt-3 mb-4"> {item.name} </h1>
+                        <h1 className="uppercase font-extrabold text-xl mt-3 mb-4 md:limited-text md:overflow-hidden md:max-h-[3em] md:line-clamp-2"> {item.name} </h1>
                         </Link>
                         
                         <p> A Partir de </p>
