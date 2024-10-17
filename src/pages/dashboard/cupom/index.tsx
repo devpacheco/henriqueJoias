@@ -104,7 +104,7 @@ export default function Cupom(){
             .then(()=>{
                 setInput("");
                 console.log("CUPOM CADASTRADO COM SUCESSO")
-                toast("Cupom Adicionado com sucesso!", {
+                toast("Atualize para ver o cupom", {
                     icon: "🎟"
                 })
             })
