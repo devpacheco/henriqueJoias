@@ -11,6 +11,7 @@ import { useState, useEffect, FormEvent } from "react";
 
 //IMPORTS DE ICONS
 import { FaFilter, FaTrash } from "react-icons/fa";
+import { VscLoading } from "react-icons/vsc";
 
 //ICONS DE CONTATO
 import { FaPhoneAlt } from "react-icons/fa";
@@ -57,6 +58,8 @@ export default function Home(){
     //ARMAZENA SELECT FILTER
     const [filter, setFilter] = useState("");
 
+    const [loading, setLoading] = useState(true);
+
     //RENDER PRODUCT
     useEffect(()=>{
 
@@ -91,7 +94,7 @@ export default function Home(){
             })
 
             setProduto(lista);
-
+            setLoading(false);
         })
 
     }
@@ -226,6 +229,13 @@ export default function Home(){
                         </button>
                     </div>
             </section>
+            {loading === true && (
+            <main className="w-full h-screen max-w-screen-xl my-3 flex items-center justify-center">
+                <div>
+                    <VscLoading  className="animate-spin" size={54} />
+                </div>
+            </main>
+            )}
             <section className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-1 sm:px-0">
                 {produto.map((item)=>(
                     <div className="w-full bg-slate-200 p-3 rounded-lg shadow-lg">
