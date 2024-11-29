@@ -8,6 +8,12 @@ interface ProductImageProps {
     url: string;
 }
 
+//INTERFACE DETAILPROPS
+interface EditProducts {
+    item: ProductProps;
+    id: string;
+}
+
 //IMPORTS DO STORAGE
 import { storage } from "@/services/firebaseConnection"
 import { uploadBytes, getDownloadURL, ref, deleteObject } from "firebase/storage"
@@ -15,7 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 //IMPORTS DO FIRESTORAGE
 import { db } from "@/services/firebaseConnection";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
 
 //IMPORT DE COMPONENTS
 import { Header } from "@/Components/header"
@@ -34,25 +40,28 @@ import { FaTrash } from "react-icons/fa";
 import { AuthContext } from "@/contexts/AuthContext";
 import Head from "next/head";
 import { CiBarcode } from "react-icons/ci";
+import { ProductProps } from "@/utils/product.type";
+import { GetServerSideProps } from "next";
 
 
 //INÍCIO DA FUNCTION PRINCIPAL
-export default function New(){
+export default function Edit({ item, id }:EditProducts){
 
     const { user, signed } = useContext(AuthContext);
     const router = useRouter();
-    const [productImage, setProductImage] = useState<ProductImageProps[]>([]);
-    const [category, setCategory] = useState("");
+    const [productImage, setProductImage] = useState<ProductImageProps[]>(item.images as ProductImageProps[]);
+    const [category, setCategory] = useState(item.category);
     console.log(category);
 
     //PROPIEDADE INPUT
-    const [init, setInit] = useState("");
-    const [final, setFinal] = useState("");
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState<number>();
-    const [plot, setPlot] = useState("");
-    const [description, setDescription] = useState("");
-
+    const [init, setInit] = useState(item.init);
+    const [final, setFinal] = useState(item.final);
+    const [name, setName] = useState(item.name);
+    const [price, setPrice] = useState<number>(item.price);
+    const [plot, setPlot] = useState(item.plot);
+    const [description, setDescription] = useState(item.description);
+    const ip = id;
+    
     //REDIRECT
     useEffect(()=>{
         function checked(){
@@ -164,7 +173,7 @@ async function onSubmit(e: FormEvent){
         }
     })
 
-    addDoc(collection(db, "product"), {
+    setDoc(doc(db, "product", ip), {
         name: name.toUpperCase(),
         category: category,
         price: price,
@@ -186,8 +195,8 @@ async function onSubmit(e: FormEvent){
         setPlot("");
         setDescription("");
         console.log("ITEM CADASTRADO!")
-        toast("Produto Cadastrada com sucesso", {
-            icon: "📦"
+        toast("Produto Editado com sucesso", {
+            icon: "✏️"
         })
     })
 }
@@ -241,7 +250,7 @@ async function onSubmit(e: FormEvent){
                                         <FaTrash size={24} color="#FFF" />
                                 </button>
                                 <img
-                                    src={item.previewUrl}
+                                    src={item.url}
                                     alt={item.name}
                                     className="w-full h-48 object-cover rounded-lg"
                                 />
@@ -360,4 +369,33 @@ async function onSubmit(e: FormEvent){
             </div>
         </main>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async({params})=>{
+    const id = params?.id as string;
+
+    const docRef = doc(db, "product", id)
+    const snapShot = await getDoc(docRef)
+
+    const miliseconds = snapShot.data()?.created?.seconds * 1000;
+
+    const product = {
+        category: snapShot.data()?.category,
+        created: new Date(miliseconds).toLocaleDateString(),
+        init: snapShot.data()?.init,
+        final: snapShot.data()?.final,
+        name: snapShot.data()?.name,
+        plot: snapShot.data()?.plot,
+        price: snapShot.data()?.price,
+        description: snapShot.data()?.description,
+        user: snapShot.data()?.user,
+        images: snapShot.data()?.images
+    }
+    
+    return{
+        props: {
+            item: product,
+            id: id,
+        }
+    }
 }

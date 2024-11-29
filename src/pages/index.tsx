@@ -205,7 +205,7 @@ export default function Home(){
                 />
                 <button type="submit" className="bg-transparent"> <IoSearch size={24} /> </button>
             </form>
-            <section className="w-96 max-w-screen-xl my-5">
+            <section className="w-full max-w-screen-xl my-5">
                     <h2 className="font-medium mb-1 flex items-center gap-2" > <FaFilter/>  Filtrar por Categoria: </h2>
                     <div className="flex gap-2">
                         <select 

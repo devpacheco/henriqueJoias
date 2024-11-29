@@ -10,7 +10,7 @@ import { AuthContext } from "@/contexts/AuthContext"
 import { useRouter } from "next/router"
 
 //IMPORTS DO BANCO DE DADOS
-import { auth, db, storage } from "@/services/firebaseConnection"
+import { db, storage } from "@/services/firebaseConnection"
 import { deleteObject, ref } from "firebase/storage";
 import { 
     collection, 
@@ -21,12 +21,15 @@ import {
     getDocs,
     doc,
     deleteDoc,
+    getDoc,
 } from "firebase/firestore"
 
 //IMPORTS DE ICONS
 import { FaFilter, FaTrash } from "react-icons/fa";
 import { FaHome } from "react-icons/fa"
 import { CiBarcode } from "react-icons/ci";
+import { FaPencilAlt } from "react-icons/fa";
+import { GetServerSideProps } from "next"
 
 export default function Dashboard(){
     const [produto, setProduto] = useState<ProductProps[]>([]);
@@ -147,8 +150,8 @@ export default function Dashboard(){
             </Head>
 
             <Header/>
-
-            <div className="w-full max-w-screen-xl mx-auto px-4 mb-5">
+             
+            <div className="w-full max-w-screen-xl mx-auto  px-1 mb-5">
                 {/* INÍCIO DA SUBMENU */}
                 <main className="my-5 bg-slate-200 px-3 py-2 rounded-lg flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-500">
                     <nav className="flex items-center gap-4 font-medium">
@@ -167,7 +170,7 @@ export default function Dashboard(){
                 {/* INÍCIO DA SUBMENU */}
 
                 {/* INÍCIO DA DASHCARD */}
-                <section className="w-96 max-w-screen-xl my-5">
+                <section className="w-full max-w-screen-xl px-1 my-5">
                     <h2 className="font-medium mb-1 flex items-center gap-2" > <FaFilter/>  Filtrar por Categoria: </h2>
                     <div className="flex gap-2">
                         <select 
@@ -197,10 +200,17 @@ export default function Dashboard(){
                         <div className="absolute top-5 right-5">
                             <button 
                             onClick={()=> handleDelete(item)}
-                            className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center" 
+                            className="w-12 h-12 mb-2 bg-slate-100 rounded-full flex items-center justify-center" 
                             > 
                                 <FaTrash size={22} /> 
                             </button>
+
+                            <Link 
+                            href={`/dashboard/edit/${item.id}`}
+                            className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center" 
+                            > 
+                                <FaPencilAlt size={22} /> 
+                            </Link>
                         </div>
                         <img
                             src={item.images[0].url}
